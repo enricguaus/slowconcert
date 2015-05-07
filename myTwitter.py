@@ -1,6 +1,6 @@
 import twitter
 import time
-import credentials
+from credentials import * 
 
 class Tweet:
 
