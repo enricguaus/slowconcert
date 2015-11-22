@@ -23,7 +23,7 @@ notes  = {
 108:"C_8",109:"C#_8",110:"D_8",111:"D#_8",112:"E_8",113:"F_8",114:"F#_8",115:"G_8",116:"G#_8",117:"A_8",118:"A#_8",119:"B_8",
 120:"C_9",121:"C#_9",122:"D_9",123:"D#_9",124:"E_9",125:"F_9",126:"F#_9",127:"G_9"}
 
-tw=Tweet()
+myTweet=Tweet()
 
 # ---- READING COMMAND LINE ----
 if len(sys.argv) < 2:
@@ -69,9 +69,9 @@ for note in range(len(score2)):
 	act_score_time = int(score2[note][0])
 	act_message    = str(score2[note][1])
 	if TEST_MODE == 1:
-		t=threading.Timer(n_seconds*act_score_time/max_score_time,tw.post_fake,(act_message,)).start()
+		t=threading.Timer(n_seconds*act_score_time/max_score_time,myTweet.post_fake,(act_message,)).start()
 	else:
 		#t=threading.Timer(n_seconds*act_score_time/max_score_time,tw.post,(act_message,)).start()
-		t=threading.Timer(n_seconds*act_score_time/max_score_time,tw.post_fake,(act_message,)).start()
+		t=threading.Timer(n_seconds*act_score_time/max_score_time,myTweet.post_fake,(act_message,)).start()
 	
 

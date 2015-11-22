@@ -1,15 +1,14 @@
-#!/usr/bin/env python
-
 import twitter
 import time
+import credentials
 
 class Tweet:
 
     def __init__(self):
-        self.consumer_keyflag    = "1234"
-        self.consumer_secretflag = "1234"
-        self.access_keyflag      = "1234"
-        self.access_secretflag   = "1234"
+        self.consumer_keyflag    = credentials_consumer_keyflag
+        self.consumer_secretflag = credentials_consumer_secretflag
+        self.access_keyflag      = credentials_access_keyflag
+        self.access_secretflag   = credentials_access_secretflag
         self.encoding            = None
         self.api  = twitter.Api(self.consumer_keyflag, self.consumer_secretflag, self.access_keyflag, self.access_secretflag, self.encoding)
         self.user = self.api.GetUser(screen_name="SlowConcert")
