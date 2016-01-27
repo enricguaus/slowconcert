@@ -3,9 +3,10 @@ import os
 import time
 import threading
 from myTwitter import Tweet
+from simpleOSC import *
 
 TEST_MODE = 1
-N_DAYS    = 0.00069444 #* 60 * 24* 4.5
+N_DAYS    = 0.00069444 *2  #* 60 * 24* 4.5
 
 print "--> Opens a txt converted midi file using http://flashmusicgames.com/midi/mid2txt.php"
 print "    and sends data to timer"
@@ -32,6 +33,12 @@ if len(sys.argv) < 2:
 	sys.exit(-1)
 
 inFile  = sys.argv[1]
+
+# ---- OSC ----
+ip='127.0.0.1'
+#ip='192.168.1.148'
+port=57120
+initOSCClient(ip, port)
 
 # ---- PROCESS ----
 # Read txt file
@@ -69,9 +76,17 @@ for note in range(len(score2)):
 	act_score_time = int(score2[note][0])
 	act_message    = str(score2[note][1])
 	if TEST_MODE == 1:
+		# This is for Twitter
 		t=threading.Timer(n_seconds*act_score_time/max_score_time,myTweet.post_fake,(act_message,)).start()
+		# This is for OSC
+		figures=score2[note][1].split(", ")
+		small_delay=0
+		for figure in reversed(figures):
+			midi_note=int(notes.keys()[notes.values().index(figure)]) # back process from name to midi note
+			t=threading.Timer(small_delay+(n_seconds*act_score_time/max_score_time),sendOSCMsg,('/note',[int(midi_note)],)).start()
+			small_delay=small_delay+0.1
 	else:
-		#t=threading.Timer(n_seconds*act_score_time/max_score_time,tw.post,(act_message,)).start()
+		#t=threading.Timer(n_seconds*act_score_time/max_score_time,myTweet.post,(act_message,)).start()
 		t=threading.Timer(n_seconds*act_score_time/max_score_time,myTweet.post_fake,(act_message,)).start()
 	
 
