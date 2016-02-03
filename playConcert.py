@@ -5,8 +5,9 @@ import threading
 from myTwitter import Tweet
 from simpleOSC import *
 
-TEST_MODE = 1
-N_DAYS    = 0.00069444 *2  #* 60 * 24* 4.5
+TEST_MODE  = 1
+MONOPHONIC = 0
+N_DAYS     = 0.00069444 *5  #* 60 * 24* 4.5
 
 print "--> Opens a txt converted midi file using http://flashmusicgames.com/midi/mid2txt.php"
 print "    and sends data to timer"
@@ -67,26 +68,35 @@ for line in score.keys():
 	score2.append([int(line),str(", ".join(score.get(line)))])
 score2=sorted(score2)
 
-#compute times
+# compute times
 max_score_time=score2[len(score2)-1][0]
 n_seconds = N_DAYS * 24 * 60 * 60
 print "--> Read time up to " + str(max_score_time) + " to be distributed into " + str(n_seconds) + " seconds."
 
+# ---- This is for Twitter ----
 for note in range(len(score2)):
 	act_score_time = int(score2[note][0])
 	act_message    = str(score2[note][1])
 	if TEST_MODE == 1:
-		# This is for Twitter
 		t=threading.Timer(n_seconds*act_score_time/max_score_time,myTweet.post_fake,(act_message,)).start()
-		# This is for OSC
-		figures=score2[note][1].split(", ")
+	else:
+		t=threading.Timer(n_seconds*act_score_time/max_score_time,myTweet.post,(act_message,)).start()
+	
+# ---- This is for OSC ----
+for note in range(len(score2)):
+	act_score_time = int(score2[note][0])
+	act_message    = str(score2[note][1])
+	figures=score2[note][1].split(", ")
+	
+	if MONOPHONIC == 1:
+		figure=figures[0]
+		midi_note=int(notes.keys()[notes.values().index(figure)]) # back process from name to midi note
+		t2=threading.Timer(n_seconds*act_score_time/max_score_time,sendOSCMsg,('/note',[int(midi_note)],)).start()
+		time.sleep(0.10)
+	else:
 		small_delay=0
 		for figure in reversed(figures):
 			midi_note=int(notes.keys()[notes.values().index(figure)]) # back process from name to midi note
-			t=threading.Timer(small_delay+(n_seconds*act_score_time/max_score_time),sendOSCMsg,('/note',[int(midi_note)],)).start()
-			small_delay=small_delay+0.1
-	else:
-		#t=threading.Timer(n_seconds*act_score_time/max_score_time,myTweet.post,(act_message,)).start()
-		t=threading.Timer(n_seconds*act_score_time/max_score_time,myTweet.post_fake,(act_message,)).start()
-	
-
+			t2=threading.Timer(small_delay+(n_seconds*act_score_time/max_score_time),sendOSCMsg,('/note',[int(midi_note)],)).start()
+			small_delay=small_delay+0.05
+			time.sleep(0.10)
