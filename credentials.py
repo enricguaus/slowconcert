@@ -1,4 +1,4 @@
-credentials_consumer_keyflag    = "aaa"
-credentials_consumer_secretflag = "bbb"
-credentials_access_keyflag      = "ccc"
-credentials_access_secretflag   = "ddd"
+credentials_consumer_keyflag    = "putYoutConsumerKeyFlagHere"
+credentials_consumer_secretflag = "putYoutConsumerSecretFlagHere"
+credentials_access_keyflag      = "putYourAccesKeyFlagHerre"
+credentials_access_secretflag   = "putYourAccessSecretFlahHere"
